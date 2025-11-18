@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     RegisterView,
+    create_superuser_temp,
     login_view,
     ProfileView,
     change_password_view,
@@ -22,4 +23,6 @@ urlpatterns = [
     
     # Refresh token
     path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+
+    path('create-superuser-temp/', create_superuser_temp, name='create-superuser-temp'),
 ]
