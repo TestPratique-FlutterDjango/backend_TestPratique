@@ -23,6 +23,4 @@ urlpatterns = [
     
     # Refresh token
     path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
-
-    path('create-superuser-temp/', create_superuser_temp, name='create-superuser-temp'),
 ]
