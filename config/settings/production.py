@@ -3,6 +3,9 @@ import dj_database_url
 
 DEBUG = False
 
+# Hosts autorisés
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+
 # Sécurité
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
@@ -14,7 +17,7 @@ SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
-# Database depuis DATABASE_URL
+# Database depuis DATABASE_URL (fourni par Render)
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL'),
@@ -23,11 +26,11 @@ DATABASES = {
     )
 }
 
-# CORS stricte en production
+# CORS
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='').split(',')
 
-# Static files (WhiteNoise pour servir les fichiers statiques)
+# WhiteNoise pour servir les fichiers statiques
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
