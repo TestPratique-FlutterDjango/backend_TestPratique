@@ -103,6 +103,18 @@ class PublicationCreateSerializer(serializers.ModelSerializer):
                     'company': 'Cette entreprise ne vous appartient pas'
                 })
         return attrs
+    
+    def create(self, validated_data):
+        """Crée une publication en assignant l'auteur"""
+        request = self.context.get('request')
+        validated_data['author'] = request.user
+        
+        # Si le statut est publié, définir published_at
+        if validated_data.get('status') == Publication.Status.PUBLISHED:
+            from django.utils import timezone
+            validated_data['published_at'] = timezone.now()
+        
+        return super().create(validated_data)
 
 
 class PublicationUpdateSerializer(serializers.ModelSerializer):
@@ -126,3 +138,13 @@ class PublicationUpdateSerializer(serializers.ModelSerializer):
                     'company': 'Cette entreprise ne vous appartient pas'
                 })
         return attrs
+    
+    def update(self, instance, validated_data):
+        """Met à jour une publication"""
+        # Si on passe de brouillon à publié, définir published_at
+        if (instance.status != Publication.Status.PUBLISHED and
+            validated_data.get('status') == Publication.Status.PUBLISHED):
+            from django.utils import timezone
+            validated_data['published_at'] = timezone.now()
+        
+        return super().update(instance, validated_data)
