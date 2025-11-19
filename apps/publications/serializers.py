@@ -70,16 +70,20 @@ class PublicationSerializer(serializers.ModelSerializer):
 class PublicationListSerializer(serializers.ModelSerializer):
     """Serializer simplifié pour la liste des publications"""
     
-    author_name = serializers.CharField(source='author.full_name', read_only=True)
-    company_name = serializers.CharField(source='company.name', read_only=True)
+    author_name = serializers.SerializerMethodField()  # ✅ Utiliser une méthode
+    company_name = serializers.CharField(source='company.name', read_only=True, allow_null=True)
     
     class Meta:
         model = Publication
         fields = [
             'id', 'title', 'author_name', 'company_name',
-            'status', 'slug', 'views_count',
+            'status', 'slug', 'views_count','content',
             'published_at', 'created_at'
         ]
+    
+    def get_author_name(self, obj):
+        """Retourne le nom complet de l'auteur avec fallback"""
+        return obj.author.full_name or obj.author.username or 'Utilisateur'
 
 
 class PublicationCreateSerializer(serializers.ModelSerializer):
